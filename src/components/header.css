@@ -1,0 +1,18 @@
+.Header{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    background-color:var(--mainBlue);
+    color:var(--lightBlue);
+  }
+  
+  .header-title{
+    margin: 10px;
+    padding: 10px;
+  }
+  .title h1{
+  font-weight: 700;
+  font-family: 'Abel', sans-serif !important;
+  color: var(--lightblue);
+  }
