@@ -1,91 +1,44 @@
-import React, { Component } from 'react'
+import React, {useState, useEffect, } from 'react'
 import './index.css'
 import axios from 'axios'
-import {Link} from 'react-router-dom'
+import Movie from '../movies/index'
 
-export default class Main extends Component {
-    state={
-        movies:[],
-        productInfo:{},
-        page:1,
-    }
 
-    componentDidMount(){
-        this.getMovies()
-    }
+export default function Main(){
+    const [movies, setMovies] = useState([])
+    const [query, setQuery] = useState('');
+    
+    useEffect(() => {
+        async function getMovies(){
+            const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_API_KEY}&query=${query}`);
+            console.log(response.data.results);
 
-    getMovies = async(page=1)=>{
-        const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_API_KEY}&query=hulk&page=${page}$include_adult=false`)
-        console.log(response.data.results)
-        const {results, ...productInfo} = response.data
+            setMovies(response.data.results);
 
-        this.setState({movies: results, productInfo, page})
-        // console.log(this.movies)
+        }
+       
+        getMovies();
+        
+    }, [query]);
 
-    }
 
-    prevPage=()=>{
-        const{page, productInfo } = this.state;
-        if(page===1) return;
-        const pageNumber = page -1;
-        this.getMovies(pageNumber)
-    }
-
-    nextPage=()=>{
-        const{page, productInfo}= this.state;
-        if(page === productInfo.pages) return;
-
-        const pageNumber = page +1;
-        this.getMovies(pageNumber);
-    }
-
-    render() {
-        const {movies, page, productInfo} = this.state
-        return (
-            <div className="product-list">
-                {
-                    movies.map(movie=>(
-                        <Link to={`/products/${movie.id}`} style={{textDecoration:'none'}} >
-                            <div  key={movie.id} className="Card" >
-                                <div className="Card-row">
-                                    <div className="Card-col-1">
-                                        <div className="poster">
-                                            <img src={movie.poster_path} alt="poster"/>
-                                        </div>
-                                    </div>
-                                    <div className="Card-col-2">
-                                        <div className="Card-header">
-                                            <h1>{movie.title}</h1>
-                                        </div>
-                                        <div className="content">
-                                            <div className="top">
-                                                <div className="rate">
-                                                    <p><strong>Rate</strong>: {movie.vote_average}</p>
-                                                </div>
-                                                <div className="data">
-                                                    <p><small>Release date: </small> {movie.release_date} </p>
-                                                </div>
-                                            </div>
-                                            <div className="text">
-                                                <p>
-                                                    <strong>sinopsis</strong> : 
-                                                    <br/>
-                                                    {movie.overview}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
-
-                    ))
-                }
-                <div className="actions">
-                    <button  disabled={page ===1} onClick={this.prevPage} >Anterior</button>
-                    <button  disabled={page ===productInfo.pages} onClick={this.nextPage} >Próximo</button>
-                </div>
+    return(
+        <>
+        <div className="container justify-content-centet mr-5 pt-5">
+            <div className="row">
+                <input 
+                    type='text'
+                    value={query}
+                    onChange={event => setQuery(event.target.value)}
+                />
             </div>
-        )
-    }
+        </div>
+        <Movie 
+        movies={movies} />
+        </>
+    )
 }
+
+
+
+

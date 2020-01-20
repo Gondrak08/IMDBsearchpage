@@ -1,62 +1,115 @@
-import React, { Component } from 'react'
+import React, {useState, useEffect } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 
 
-export default class Product extends Component {
-    state={
-        movie:{},
-    }
+export default function Product({match}){
+    const [movie, setMovie ] = useState([])
+    const {id} = match.params;
 
-    async componentDidMount(){
-        const {id} = this.props.match.params
-        const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_API_KEY}`)
-        this.setState({
-            movie: response.data
-        })
-    }
+    useEffect(()=>{
+        async function loadMovie(){
+            const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_API_KEY}`);
+            setMovie(response.data);
+        }
+        loadMovie();
+    },[id]);
 
-    render() {
-        const {movie} = this.state
-        return (
-            <>
-                <Card>
-                    <CardHeader>
-                        <h1>{movie.title}</h1>
-                    </CardHeader>
-                    <CardRow>
-                        <CardCol1>
-                            <img src={'https://image.tmdb.org/t/p/w500' + movie.poster_path} alt="poster"/>
-                        </CardCol1>
-                        <CardCol2>
-                            <CardBody>
-                                <h2> sinopse: </h2>
-                                <hr/>
-                                <p> {movie.overview} </p>
-                            </CardBody>
-                            <CardBox>
-                                <h2>info</h2>
-                                <hr/>
-                                <CardBox2>
-                                    <p>Situação</p>
-                                    <p>Idioma</p>
-                                    <p>Duração</p>
-                                    <p>Orçamento</p>
-                                    <p>Receita</p>
-                                    <p>Lucro</p>
-                                </CardBox2>
-                                <CardRate>
-                                    Rate: <p>{movie.vote_average}</p>
+    return(
+        <>
+             <Card>
+                     <CardHeader>
+                         <h1>{movie.title}</h1>
+                     </CardHeader>
+                     <CardRow>
+                         <CardCol1>
+                             <img src={'https://image.tmdb.org/t/p/w500' + movie.poster_path} alt="poster"/>
+                         </CardCol1>
+                         <CardCol2>
+                             <CardBody>
+                                 <h2> sinopse: </h2>
+                                 <hr/>
+                                 <p> {movie.overview} </p>
+                             </CardBody>
+                             <CardBox>
+                                 <h2>info</h2>
+                                 <hr/>
+                                 <CardBox2>
+                                     <p>Situação</p>
+                                     <p>Idioma</p>
+                                     <p>Duração</p>
+                                     <p>Orçamento</p>
+                                     <p>Receita</p>
+                                     <p>Lucro</p>
+                                 </CardBox2>
+                                 <CardRate>
+                                     Rate: <p>{movie.vote_average}</p>
                                 </CardRate>
-                            </CardBox>
+                             </CardBox>
                         </CardCol2>
-                    </CardRow>
-                </Card>
-
-            </>
-        )
-    }
+                     </CardRow>
+                 </Card>
+        </>
+    )
 }
+
+
+
+
+// export default class Product extends Component {
+//     state={
+//         movie:{},
+//     }
+
+//     async componentDidMount(){
+//         const {id} = this.props.match.params
+//         const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_API_KEY}`)
+//         this.setState({
+//             movie: response.data
+//         })
+//     }
+
+//     render() {
+//         const {movie} = this.state
+//         return (
+//             <>
+//                 <Card>
+//                     <CardHeader>
+//                         <h1>{movie.title}</h1>
+//                     </CardHeader>
+//                     <CardRow>
+//                         <CardCol1>
+//                             <img src={'https://image.tmdb.org/t/p/w500' + movie.poster_path} alt="poster"/>
+//                         </CardCol1>
+//                         <CardCol2>
+//                             <CardBody>
+//                                 <h2> sinopse: </h2>
+//                                 <hr/>
+//                                 <p> {movie.overview} </p>
+//                             </CardBody>
+//                             <CardBox>
+//                                 <h2>info</h2>
+//                                 <hr/>
+//                                 <CardBox2>
+//                                     <p>Situação</p>
+//                                     <p>Idioma</p>
+//                                     <p>Duração</p>
+//                                     <p>Orçamento</p>
+//                                     <p>Receita</p>
+//                                     <p>Lucro</p>
+//                                 </CardBox2>
+//                                 <CardRate>
+//                                     Rate: <p>{movie.vote_average}</p>
+//                                 </CardRate>
+//                             </CardBox>
+//                         </CardCol2>
+//                     </CardRow>
+//                 </Card>
+
+//             </>
+//         )
+//     }
+// }
 
 const Card = styled.div`
 margin: 5rem;
